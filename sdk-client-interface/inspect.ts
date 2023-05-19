@@ -31,10 +31,10 @@ interfaces.forEach(iface => {
 });
 
 fs.writeFile(
-  './interfaceData.js',
+  './interfaces.js',
   `module.exports = ${JSON.stringify(exportObject, null, 2)}`,
   err => {
     if (err) throw err;
-    console.log('interfaceData.js has been saved!');
+    console.log('interfaces.js has been saved!');
   }
 );

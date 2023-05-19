@@ -1,14 +1,14 @@
 module.exports = {
-  "CacheBase": {
+  "ICacheBase": {
     "terminal": "{ [key: string]: any; completionCallback?: AnyFunction; }",
     "requests": "{ [key: string]: unknown; }"
   },
-  "FunctionalCache": {},
-  "Cache": {
-    "data": "CacheBase",
+  "IFunctionalCache": {},
+  "ICache": {
+    "data": "ICacheBase",
     "get": "(key: string) => any",
     "set": "(key: string, value: any) => void",
-    "[Symbol.toPrimitive]": "FunctionalCache"
+    "[Symbol.toPrimitive]": "IFunctionalCache"
   },
   "CallableCache": {},
   "ModelAccessor": {
@@ -31,8 +31,8 @@ module.exports = {
     "current": "any",
     "cache": "any",
     "process": "() => this",
-    "storedPromise": "AccessorPromise<T>",
-    "from": "(...args: any[]) => AccessorPromise<T>",
+    "storedPromise": "IAccessorPromise<T>",
+    "from": "(...args: any[]) => IAccessorPromise<T>",
     "typedList": "ModelInstance<T>[]"
   },
   "ModelInstance": {
@@ -45,7 +45,7 @@ module.exports = {
     "getPath": "() => string"
   },
   "ClientInterface": {
-    "credentuals": "Credentials",
+    "credentials": "Credentials",
     "authentication": "{ token: string; authenticated: boolean; }",
     "auth": "{ token: string; authenticated: boolean; }",
     "willStoreNextResult": "boolean",
@@ -54,14 +54,14 @@ module.exports = {
     "await": "() => this",
     "cache": "Cache"
   },
-  "AccessorPromise": {
+  "IAccessorPromise": {
     "lastCaller": "Skippable",
     "accessor": "ModelAccessor<T>",
     "sdk": "ClientInterface",
     "cache": "CallableCache",
     "processed": "boolean",
-    "catch": "(...args: any[]) => AccessorPromise<T>",
-    "finally": "(...args: any[]) => AccessorPromise<T>",
+    "catch": "(...args: any[]) => IAccessorPromise<T>",
+    "finally": "(...args: any[]) => IAccessorPromise<T>",
     "typedValue": "any",
     "as": "(cacheKey?: string, caller?: string, returnAccessor?: boolean) => this",
     "result": "ModelAccessor<T>",
@@ -72,10 +72,15 @@ module.exports = {
     "from": "(fn: any, m?: ModelAccessor<T>, i?: ClientInterface) => this",
     "once": "() => this",
     "twice": "() => this",
-    "fromPromise": "(promise: Promise<any>) => AccessorPromise<T>",
+    "fromPromise": "(promise: Promise<any>) => IAccessorPromise<T>",
     "toString": "() => string"
   },
-  "NoOpPromise": {},
+  "INoOpPromise": {
+    "noOp": "() => INoOpPromise",
+    "to": "INoOpPromise",
+    "once": "INoOpPromise",
+    "twice": "INoOpPromise"
+  },
   "Skippable": {
     "skip": "boolean",
     "willSkip": "boolean",
