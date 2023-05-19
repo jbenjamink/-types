@@ -5,7 +5,7 @@ declare type Credentials = {
   password: string;
 };
 
-declare interface CacheBase {
+declare interface ICacheBase {
   terminal: {
     completionCallback?: AnyFunction | null;
     [key: string]: any;
@@ -16,15 +16,15 @@ declare interface CacheBase {
   [key: string | symbol]: unknown;
 }
 
-declare interface FunctionalCache {
+declare interface IFunctionalCache {
   (...args: any[]): void;
 }
 
-declare interface Cache {
-  data: CacheBase;
+declare interface ICache {
+  data: ICacheBase;
   get: (key: string) => any;
   set: (key: string, value: any) => void;
-  [Symbol.toPrimitive]: FunctionalCache;
+  [Symbol.toPrimitive]: IFunctionalCache;
   [key: string | symbol]: any;
 }
 
@@ -53,8 +53,8 @@ declare interface ModelAccessor<T> {
   current: any;
   cache: any; //Cache class which uses Cache/CacheBase
   process: () => this;
-  storedPromise: AccessorPromise<T>;
-  from: (...args: any[]) => AccessorPromise<T>;
+  storedPromise: IAccessorPromise<T>;
+  from: (...args: any[]) => IAccessorPromise<T>;
   typedList: ModelInstance<T>[];
   // then: (...args: any[]) => Promise<any>;
 }
@@ -72,7 +72,7 @@ declare interface ModelInstance<T> {
 
 declare interface ClientInterface {
   // [key: string]: ModelAccessor<any>;
-  credentuals?: Credentials;
+  credentials?: Credentials;
   authentication: {
     token: string | null;
     authenticated: boolean;
@@ -88,14 +88,14 @@ declare interface ClientInterface {
   cache: Cache;
 }
 
-declare interface AccessorPromise<T> extends Promise<any> {
+declare interface IAccessorPromise<T> extends Promise<any> {
   lastCaller: Skippable | null;
   accessor?: ModelAccessor<T>;
   sdk?: ClientInterface;
   cache: CallableCache;
   processed: boolean;
-  catch: (...args: any[]) => AccessorPromise<T>;
-  finally: (...args: any[]) => AccessorPromise<T>;
+  catch: (...args: any[]) => IAccessorPromise<T>;
+  finally: (...args: any[]) => IAccessorPromise<T>;
   typedValue: any;
   as: (cacheKey?: string, caller?: string, returnAccessor?: boolean) => this;
   result: ModelAccessor<T> | undefined;
@@ -106,18 +106,23 @@ declare interface AccessorPromise<T> extends Promise<any> {
   from: (fn: any, m?: ModelAccessor<T>, i?: ClientInterface) => this;
   once: () => this;
   twice: () => this;
-  fromPromise: (promise: Promise<any>) => AccessorPromise<T>;
-  noOp(): NoOpPromise;
+  fromPromise: (promise: Promise<any>) => IAccessorPromise<T>;
+  noOp(): INoOpPromise;
   toString: () => string;
   // cacheTo: as;
   // to = this.set;
   // cacheSafely = this.process;
 }
 
-declare interface NoOpPromise extends Promise<any> {}
+declare interface INoOpPromise extends Promise<any> {
+  noOp: () => INoOpPromise;
+  to: INoOpPromise;
+  once: INoOpPromise;
+  twice: INoOpPromise;
+}
 
 declare interface Skippable {
-  (): AccessorPromise<any> | NoOpPromise;
+  (): IAccessorPromise<any> | INoOpPromise;
   skip?: boolean;
   willSkip?: boolean;
   cache?: unknown;
