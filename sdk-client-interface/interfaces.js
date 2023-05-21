@@ -29,7 +29,7 @@ module.exports = {
     "onCreate": "AnyFunction",
     "doNextActionOnce": "boolean",
     "current": "any",
-    "cache": "any",
+    "cache": "ICache",
     "process": "() => this",
     "storedPromise": "IAccessorPromise<T>",
     "from": "(...args: any[]) => IAccessorPromise<T>",
@@ -52,7 +52,7 @@ module.exports = {
     "activeOrganizationUuid": "string",
     "isBlocking": "boolean",
     "await": "() => this",
-    "cache": "Cache"
+    "cache": "ICache"
   },
   "IAccessorPromise": {
     "lastCaller": "Skippable",
@@ -66,20 +66,20 @@ module.exports = {
     "as": "(cacheKey?: string, caller?: string, returnAccessor?: boolean) => this",
     "result": "ModelAccessor<T>",
     "process": "(callback?: AnyFunction) => this",
-    "response": "() => ModelAccessor<T>",
+    "response": "() => any",
     "set": "(fn?: any) => ClientInterface | this",
     "disable": "(m: ModelAccessor<T>, f: Skippable, shouldDisable: boolean) => this",
     "from": "(fn: any, m?: ModelAccessor<T>, i?: ClientInterface) => this",
     "once": "() => this",
     "twice": "() => this",
-    "fromPromise": "(promise: Promise<any>) => IAccessorPromise<T>",
     "toString": "() => string"
   },
+  "IAccessorPromiseConstructor": {},
   "INoOpPromise": {
     "noOp": "() => INoOpPromise",
-    "to": "INoOpPromise",
-    "once": "INoOpPromise",
-    "twice": "INoOpPromise"
+    "to": "() => INoOpPromise",
+    "once": "() => INoOpPromise",
+    "twice": "() => INoOpPromise"
   },
   "Skippable": {
     "skip": "boolean",

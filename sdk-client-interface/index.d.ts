@@ -28,7 +28,7 @@ declare interface ICache {
   [key: string | symbol]: any;
 }
 
-declare interface CallableCache extends Cache {
+declare interface CallableCache extends ICache {
   (): void;
 }
 
@@ -51,7 +51,7 @@ declare interface ModelAccessor<T> {
   onCreate: AnyFunction;
   doNextActionOnce: boolean;
   current: any;
-  cache: any; //Cache class which uses Cache/CacheBase
+  cache: ICache;
   process: () => this;
   storedPromise: IAccessorPromise<T>;
   from: (...args: any[]) => IAccessorPromise<T>;
@@ -85,7 +85,7 @@ declare interface ClientInterface {
   activeOrganizationUuid?: string;
   isBlocking: boolean;
   await: () => this;
-  cache: Cache;
+  cache: ICache;
 }
 
 declare interface IAccessorPromise<T> extends Promise<any> {
@@ -100,25 +100,34 @@ declare interface IAccessorPromise<T> extends Promise<any> {
   as: (cacheKey?: string, caller?: string, returnAccessor?: boolean) => this;
   result: ModelAccessor<T> | undefined;
   process: (callback?: AnyFunction) => this;
-  response: () => ModelAccessor<T> | undefined;
+  response: () => AccessorPromise<ModelAccessor<T>> | undefined;
   set: (fn?: any) => this | ClientInterface;
   disable: (m: ModelAccessor<T>, f: Skippable, shouldDisable: boolean) => this;
   from: (fn: any, m?: ModelAccessor<T>, i?: ClientInterface) => this;
   once: () => this;
   twice: () => this;
-  fromPromise: (promise: Promise<any>) => IAccessorPromise<T>;
-  noOp(): INoOpPromise;
   toString: () => string;
   // cacheTo: as;
   // to = this.set;
   // cacheSafely = this.process;
 }
 
+interface IAccessorPromiseConstructor {
+  new <T>(
+    executor: (
+      resolve: (value: T | PromiseLike<T>) => void,
+      reject: (reason?: any) => void
+    ) => void
+  ): IAccessorPromise<T>;
+  static fromPromise<T>(promise: Promise<T>): IAccessorPromise<T>;
+  static noOp<T>(): IAccessorPromise<T>;
+}
+
 declare interface INoOpPromise extends Promise<any> {
   noOp: () => INoOpPromise;
-  to: INoOpPromise;
-  once: INoOpPromise;
-  twice: INoOpPromise;
+  to: () => INoOpPromise;
+  once: () => INoOpPromise;
+  twice: () => INoOpPromise;
 }
 
 declare interface Skippable {
