@@ -32,11 +32,22 @@ declare interface CallableCache extends ICache {
   (): void;
 }
 
+declare interface ModelInstance<T> {
+  uuid: string;
+  routePath: string;
+  accessor?: ModelAccessor<T>;
+  select(uuid: string): this;
+  refetch?: () => Promise<ModelAccessor<T> | undefined>;
+  delete: () => void;
+  update: (data: any) => Promise<this>;
+  getPath: () => string;
+}
+
 declare interface ModelAccessor<T> {
   root: ClientInterface;
   uuid: string;
   routePath: string;
-  model: any;
+  model: ModelInstance<T>;
   parent?: ModelAccessor<any>;
   select(uuid: string): this;
   fetch?: Skippable;
@@ -57,17 +68,6 @@ declare interface ModelAccessor<T> {
   from: (...args: any[]) => IAccessorPromise<T>;
   typedList: ModelInstance<T>[];
   // then: (...args: any[]) => Promise<any>;
-}
-
-declare interface ModelInstance<T> {
-  uuid: string;
-  routePath: string;
-  accessor?: ModelAccessor<T>;
-  select(uuid: string): this;
-  refetch?: () => Promise<ModelAccessor<T> | undefined>;
-  delete: () => void;
-  update: (data: any) => Promise<this>;
-  getPath: () => string;
 }
 
 declare interface ClientInterface {
@@ -100,7 +100,7 @@ declare interface IAccessorPromise<T> extends Promise<any> {
   as: (cacheKey?: string, caller?: string, returnAccessor?: boolean) => this;
   result: ModelAccessor<T> | undefined;
   process: (callback?: AnyFunction) => this;
-  response: () => AccessorPromise<ModelAccessor<T>> | undefined;
+  response: () => IAccessorPromise<ModelAccessor<T>> | undefined;
   set: (fn?: any) => this | ClientInterface;
   disable: (m: ModelAccessor<T>, f: Skippable, shouldDisable: boolean) => this;
   from: (fn: any, m?: ModelAccessor<T>, i?: ClientInterface) => this;
@@ -119,8 +119,8 @@ interface IAccessorPromiseConstructor {
       reject: (reason?: any) => void
     ) => void
   ): IAccessorPromise<T>;
-  static fromPromise<T>(promise: Promise<T>): IAccessorPromise<T>;
-  static noOp<T>(): IAccessorPromise<T>;
+  fromPromise<T>(promise: Promise<T>): IAccessorPromise<T>;
+  noOp<T>(): IAccessorPromise<T>;
 }
 
 declare interface INoOpPromise extends Promise<any> {
