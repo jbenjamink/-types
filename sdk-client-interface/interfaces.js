@@ -11,11 +11,20 @@ module.exports = {
     "[Symbol.toPrimitive]": "IFunctionalCache"
   },
   "CallableCache": {},
+  "ModelInstance": {
+    "uuid": "string",
+    "routePath": "string",
+    "accessor": "ModelAccessor<T>",
+    "refetch": "() => Promise<ModelAccessor<T>>",
+    "delete": "() => void",
+    "update": "(data: any) => Promise<this>",
+    "getPath": "() => string"
+  },
   "ModelAccessor": {
     "root": "ClientInterface",
     "uuid": "string",
     "routePath": "string",
-    "model": "any",
+    "model": "ModelInstance<T>",
     "parent": "ModelAccessor<any>",
     "fetch": "Skippable",
     "delete": "() => void",
@@ -34,15 +43,6 @@ module.exports = {
     "storedPromise": "IAccessorPromise<T>",
     "from": "(...args: any[]) => IAccessorPromise<T>",
     "typedList": "ModelInstance<T>[]"
-  },
-  "ModelInstance": {
-    "uuid": "string",
-    "routePath": "string",
-    "accessor": "ModelAccessor<T>",
-    "refetch": "() => Promise<ModelAccessor<T>>",
-    "delete": "() => void",
-    "update": "(data: any) => Promise<this>",
-    "getPath": "() => string"
   },
   "ClientInterface": {
     "credentials": "Credentials",
@@ -66,7 +66,7 @@ module.exports = {
     "as": "(cacheKey?: string, caller?: string, returnAccessor?: boolean) => this",
     "result": "ModelAccessor<T>",
     "process": "(callback?: AnyFunction) => this",
-    "response": "() => any",
+    "response": "() => IAccessorPromise<ModelAccessor<T>>",
     "set": "(fn?: any) => ClientInterface | this",
     "disable": "(m: ModelAccessor<T>, f: Skippable, shouldDisable: boolean) => this",
     "from": "(fn: any, m?: ModelAccessor<T>, i?: ClientInterface) => this",
